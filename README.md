@@ -25,20 +25,18 @@ It demonstrates how saved credentials (from Chrome, Edge, and Opera) and Wi-Fi p
 
 ## 💡 Features
 
-- Extract saved Wi-Fi SSIDs and passwords  
-- Decrypt Chrome, Edge, and Opera browser credentials using Windows DPAPI + AES-GCM  
-- Load SQLite databases fully in-memory (prevents file locks and reduces detection)  
-- Clean, formatted output for reports  
-- Optional upload to Google Apps Script endpoint (for remote auditing in controlled settings)  
+- Extract saved **Wi-Fi SSIDs and passwords**
+- Decrypt **Chrome, Edge, and Opera** browser credentials using Windows **DPAPI + AES-GCM**
+- Load SQLite databases **in-memory** (avoids file locks, reduces detection)
+- Output all results in a **clean, readable report**
+- Optional **encrypted upload** to Google Apps Script endpoint (for remote auditing in controlled settings)
 
 ---
 
 ## 📦 Requirements
 
-Install the required Python packages:
+Create a `requirements.txt` file with the following:
 
-```bash
-pip install -r requirements.txt
 ````
 
 Your `requirements.txt` should contain:
