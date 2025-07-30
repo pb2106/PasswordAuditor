@@ -1,4 +1,3 @@
-````markdown
 # Password Auditor
 
 **Educational Credential & Wi-Fi Recovery Tool**
@@ -37,15 +36,6 @@ It demonstrates how saved credentials (from Chrome, Edge, and Opera) and Wi-Fi p
 
 Create a `requirements.txt` file with the following:
 
-````
-
-Your `requirements.txt` should contain:
-
-```
-pycryptodome
-cryptography
-requests
-```
 
 ---
 
