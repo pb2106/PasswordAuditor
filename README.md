@@ -1,7 +1,3 @@
-Got it 👍 You want a **README.md** that not only has the build/use instructions, but also highlights what was updated in terms of **stealth / evasion methods** for your **college project report**.
-
-Here’s a complete **updated README.md** you can copy:
-
 ````markdown
 # Password Auditor
 
