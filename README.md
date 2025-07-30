@@ -143,4 +143,3 @@ This project serves as a **practical case study** in:
 * The importance of responsible disclosure and controlled testing environments
 
 ---
-```
