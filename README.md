@@ -1,4 +1,4 @@
-# 🔓 Password Auditor — Linux/KDE Edition
+#  Password Auditor — Linux/KDE Edition
 
 ```
 ██████╗  █████╗ ███████╗███████╗ ██████╗ ██╗   ██╗██████╗ ████████╗ ██████╗ ██████╗ 
@@ -9,7 +9,7 @@
 ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚═╝        ╚═╝    ╚═════╝ ╚═╝     
 ```
 
-> ⚠️ **For educational purposes only.** Run it on systems you own. We are not responsible for what you do with this.
+>  **For educational purposes only.** Run it on systems you own. We are not responsible for what you do with this.
 
 ---
 
@@ -41,7 +41,7 @@ pycryptodome
 ## // SETUP
 
 ```bash
-git clone https://github.com/yourusername/PasswordAuditor.git
+git clone https://github.com/pb2106/PasswordAuditor.git
 cd PasswordAuditor
 
 python3 -m venv venv
