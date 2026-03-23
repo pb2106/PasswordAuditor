@@ -1,145 +1,151 @@
-# Password Auditor
+# 🔓 Password Auditor — Linux/KDE Edition
 
-**Educational Credential & Wi-Fi Recovery Tool**
-
-This project is built purely for **educational and ethical testing purposes**.  
-It demonstrates how saved credentials (from Chrome, Edge, and Opera) and Wi-Fi passwords can be retrieved on a Windows system — only when the user has permission to do so.
-
----
-
-## 🔒 Disclaimer
-
-> This tool is strictly for **educational use** only.  
-> Do **not** use it on systems you do not own or without explicit permission.  
-> The authors will not be responsible for any misuse or damage caused by this script.
-
----
-
-## 👨‍💻 Authors
-
-- G Abhiram  
-- Chirag Anil Ramamurthy
-
----
-
-## 💡 Features
-
-- Extract saved **Wi-Fi SSIDs and passwords**
-- Decrypt **Chrome, Edge, and Opera** browser credentials using Windows **DPAPI + AES-GCM**
-- Load SQLite databases **in-memory** (avoids file locks, reduces detection)
-- Output all results in a **clean, readable report**
-- Optional **encrypted upload** to Google Apps Script endpoint (for remote auditing in controlled settings)
-
----
-
-## 📦 Requirements
-
-Create a `requirements.txt` file with the following:
-
-
----
-
-## ⚙️ Building the Module
-
-If you are using the included **Cython syscalls extension** (for DPAPI decryption), build it before running:
-
-```bash
-python setup.py build_ext --inplace
+```
+██████╗  █████╗ ███████╗███████╗ ██████╗ ██╗   ██╗██████╗ ████████╗ ██████╗ ██████╗ 
+██╔══██╗██╔══██╗╚══███╔╝██╔════╝██╔═══██╗██║   ██║██╔══██╗╚══██╔══╝██╔═══██╗██╔══██╗
+██████╔╝███████║  ███╔╝ █████╗  ██║   ██║██║   ██║██████╔╝   ██║   ██║   ██║██████╔╝
+██╔═══╝ ██╔══██║ ███╔╝  ██╔══╝  ██║▄▄ ██║██║   ██║██╔═══╝    ██║   ██║   ██║██╔═══╝ 
+██║     ██║  ██║███████╗███████╗╚██████╔╝╚██████╔╝██║        ██║   ╚██████╔╝██║     
+╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚═╝        ╚═╝    ╚═════╝ ╚═╝     
 ```
 
-This will compile the Cython extension in the same directory for faster and lower-level system calls.
+> ⚠️ **For educational purposes only.** Run it on systems you own. We are not responsible for what you do with this.
 
 ---
 
-## 🚀 Usage
+## // WHAT IT DOES
 
-Once dependencies and the extension are built, simply run:
+Rips credentials straight from your own machine:
 
-```bash
-python Password_Auditor.py
+- 📶 **Wi-Fi passwords** — reads NetworkManager profiles + pulls secrets from KWallet
+- 🌐 **Browser logins** — decrypts saved passwords from all Chromium-based browsers using the AES key stored in KWallet
+- 💾 **Saves a report** — everything dumped to a local `.txt` file
+
+---
+
+## // REQUIREMENTS
+
+**System:**
+- KDE Plasma (KWallet must be running and unlocked)
+- NetworkManager
+- `kwallet-query` + `qdbus` — already on your system if you're on KDE
+- `sudo` — needed to read NetworkManager connection files
+
+**Python:**
+```
+pycryptodome
 ```
 
-This will generate a report containing:
-
-* Wi-Fi SSIDs and passwords
-* Saved Chrome / Edge / Opera logins (URLs, usernames, and decrypted passwords)
-
 ---
 
-## 🛡️ Updates: Stealth & Evasion Techniques
-
-This project was updated to include **defensive evasion mechanisms**, so that the code demonstrates how modern auditing tools can avoid false positives from security software. These updates are purely for **educational demonstration** of evasion techniques, not malicious purposes.
-
-### Key Updates
-
-* **Dynamic Imports**
-  Instead of static `import` statements, modules are loaded at runtime using a custom importer.
-  This reduces signature-based detections.
-
-* **In-memory SQLite Loading**
-  Browser `Login Data` databases are never accessed directly.
-  Instead, they are copied and loaded into memory (`:memory:`) using SQLite’s backup feature.
-  This avoids file-lock errors and minimizes footprint.
-
-* **AES-GCM via Cryptography Library**
-  Instead of using a direct `pycryptodome` call (commonly flagged),
-  the script uses `cryptography.hazmat` AES-GCM decryptors, which are standard in enterprise apps.
-
-* **Obfuscated SQL Queries**
-  Sensitive queries (like extracting from the `logins` table) are base64-encoded and decoded at runtime.
-  This prevents static scanners from matching known strings.
-
-* **Optional Encryption of Results**
-  Before transmission (to an Apps Script endpoint), results are encrypted with AES-CBC.
-  This demonstrates how real-world auditing tools can securely handle sensitive outputs.
-
-* **Code Signing Ready**
-  The project includes documentation for exporting a certificate and signing the final executable,
-  further reducing false positives.
-
----
-
-## ⚠️ Important Notes
-
-* Works only on **Windows** (due to DPAPI).
-* Tested on **Python 3.12**.
-* Only run on systems **you own or have explicit permission** to audit.
-
----
-
-## 🏗️ Building into an EXE
-
-To package this tool into a single `.exe` file:
+## // SETUP
 
 ```bash
-pyinstaller --noconfirm --onefile --windowed --name AuditorEXE ^
-  --hidden-import sqlite3 ^
-  --hidden-import json ^
-  --hidden-import base64 ^
-  --hidden-import requests ^
-  --hidden-import shutil ^
-  --hidden-import time ^
-  --hidden-import subprocess ^
-  --hidden-import os ^
-  --hidden-import xml.etree.ElementTree ^
-  --hidden-import Cryptodome.Cipher.AES ^
-  --hidden-import Crypto.Util.Padding ^
-  --hidden-import cryptography.hazmat.primitives.ciphers ^
-  --hidden-import cryptography.hazmat.backends ^
-  Password_Auditor.py
+git clone https://github.com/yourusername/PasswordAuditor.git
+cd PasswordAuditor
+
+python3 -m venv venv
+source venv/bin/activate
+
+pip install -r requirements.txt
 ```
 
-The executable will be created inside the `dist/` folder.
+---
+
+## // USAGE
+
+```bash
+python3 Password_Auditor.py
+```
+
+> ⚡ Run as a **normal user**, NOT root. KWallet is inaccessible as root and browser decryption will fail.
+
+You'll be prompted for sudo (needed for Wi-Fi files only). Everything else runs in userspace.
+
+Output lands here:
+```
+<username>_<macaddress>_report.txt
+```
+
+> 🚨 Add `*_report.txt` to your `.gitignore`. Do NOT commit this file — it contains plaintext credentials.
 
 ---
 
-## 📜 Educational Value
+## // HOW IT WORKS
 
-This project serves as a **practical case study** in:
+### Wi-Fi
 
-* How credentials and Wi-Fi passwords are stored on Windows
-* How Windows DPAPI and AES-GCM protect browser data
-* How in-memory forensics and evasion techniques are implemented in auditing tools
-* The importance of responsible disclosure and controlled testing environments
+NetworkManager keeps connection profiles in `/etc/NetworkManager/system-connections/`. Some store the password inline as `psk=`. Most don't — they set `psk-flags=1` which means *"ask the secrets agent"*.
+
+On KDE, that agent is **KWallet**. The password lives in the `Network Management` folder, keyed by UUID:
+
+```
+{uuid};802-11-wireless-security  →  { "psk": "yourpassword" }
+```
+
+The tool:
+1. Reads all `.nmconnection` files → builds a `UUID → SSID` map
+2. Lists keys in KWallet `Network Management` folder
+3. Pulls and parses the JSON blob for each UUID
+4. Merges everything into one clean output
+
+### Browser Passwords
+
+Chromium browsers store logins in a SQLite DB:
+```
+~/.config/<browser>/Default/Login Data
+```
+
+Each password is encrypted with **AES-128-CBC**. The key is derived from a secret stored in KWallet (`Chromium Keys` folder, `Chromium Safe Storage` key) using:
+```
+PBKDF2-SHA1(secret, salt=b"saltysalt", iterations=1, keylen=16)
+```
+
+The tool:
+1. Resolves the real wallet name dynamically via `qdbus`
+2. Fuzzy-matches KWallet folders against the browser name — **no hardcoded folder/key names**
+3. Derives the AES key from whatever secret it finds
+4. Decrypts every entry in the SQLite DB
 
 ---
+
+## // SUPPORTED BROWSERS
+
+| Browser   | Path |
+|-----------|------|
+| Chromium  | `~/.config/chromium` |
+| Chrome    | `~/.config/google-chrome` |
+| Edge      | `~/.config/microsoft-edge` |
+| Brave     | `~/.config/BraveSoftware/Brave-Browser` |
+| Opera     | `~/.config/opera` |
+
+Adding a new browser takes one line in `browser_pass.py`:
+```python
+"vivaldi": ("vivaldi", "~/.config/vivaldi"),
+```
+
+---
+
+## // FILE STRUCTURE
+
+```
+PasswordAuditor/
+├── Password_Auditor.py   # entry point — Wi-Fi + report
+├── browser_pass.py       # browser decryption + KWallet discovery
+├── requirements.txt      # deps
+└── README.md
+```
+
+---
+
+## // AUTHORS
+
+- **G Abhiram**
+- **Chirag Anil Ramamurthy**
+- **Prabhav M Naik** *(Contributor)*
+
+---
+
+## // DISCLAIMER
+
+This tool is for **educational purposes only**. It is designed to show how credentials are stored locally on Linux systems. Only use it on machines you own or have explicit permission to audit. Misuse is your problem, not ours.
